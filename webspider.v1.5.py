@@ -48,9 +48,12 @@ class Task:
     def run(self):
 	p = Page(self.url, self.depth)
 	p.do_request()
-	p.parse_content()
 
 	if self.depth > 0:
+	    # if self.depth > 0, so we need go to next level
+	    # should do the parse content
+	    # otherwise, do nothing
+	    p.parse_content()
 	    for href in p.hrefs:
 		t = Task(href, self.depth-1)
 		self.subtasks.append(t)
@@ -82,11 +85,10 @@ class Page:
 	    return None
     
     def do_request(self):
-	print 'do request to: %s, depth: %s' % (self.url, self.depth)
-
 	if not self.url:
 	    return None
-	# maybe need do some exception and timeout
+	print 'do request to: %s, depth: %s' % (self.url, self.depth)
+	# maybe need do some exception resolve and timeout
 	# and if this is in class Page ?
 	# or in other part ?
 	req = requests.get(url)
