@@ -35,25 +35,21 @@ class Task:
     def __init__(self, url, depth):
 	self.url = url
 	self.depth = depth
-	self.hrefs = []
 	self.subtasks = []
 
     def run(self):
 	p = Page(self.url, self.depth)
 	p.do_request()
 	p.parse_content()
+
 	if self.depth > 0:
-	    self.hrefs = p.hrefs
-	    for href in self.hrefs:
+	    for href in p.hrefs:
 		t = Task(href, self.depth-1)
 		self.subtasks.append(t)
 
     def __get_subtasks(self):
 	return self.subtasks
     subtasks = property(__get_subtasks)
-
-
-
 
 
 class Page:
