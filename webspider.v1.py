@@ -32,7 +32,6 @@ class Spider:
 	    p.parse_content()
 	    hrefs = p.hrefs
 
-	    #if depth > 0:
 	    for href in hrefs:
 		self.tasks.put_nowait(href)
 
@@ -79,7 +78,7 @@ class Page:
 		u = urlparse.urlparse(href)
 		if not u.scheme:
 		    href = self.baseurl + href
-		self.hrefs.append(href) #, self.depth))
+		self.hrefs.append(href)
     
     def __get_href(self):
 	# remove repetition
