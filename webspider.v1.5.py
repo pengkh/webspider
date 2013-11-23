@@ -22,15 +22,16 @@ class Spider:
     def run(self):
 	self.tasks.put(Task(self.url, self.depth))
 	threds = [ 
-		gevent.spawn(self.work)
+		gevent.spawn(self.worker)
 		for i in range(self.threads)
 		]
 	gevent.joinall(threds)
 
-    def work(self):
+    def worker(self, worker_id=''):
 	while not self.tasks.empty():
 	    task = self.tasks.get()
 	    if task.url in self.bucket:
+		# here have a bug
 		continue
 	    self.bucket.append(task.url)
 	    task.run()
