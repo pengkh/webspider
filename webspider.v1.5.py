@@ -94,19 +94,25 @@ class Page:
 	req = requests.get(url)
 	self.content = req.content
 
+    def url_filter(self, url):
+	if not url:
+	    return None
+	u = urlparse.urlparse(url)
+	if u.scheme and u.netloc:
+	    return url
+	elif u.path:
+	    return self.baseurl + url
+	else:
+	    return None
+
     def parse_content(self):
 	if not self.content:
 	    return None
 	sp = bs4.BeautifulSoup(self.content)
-	for a in sp.find_all('a'):
-	    # here need a filter
-	    href = a.attrs.get('href')
-	    if href and href[0] != '#':
-		# if not has protocol scheme or is a relative url
-		# should use the absolute and standard presentation style
-		u = urlparse.urlparse(href)
-		if not u.scheme:
-		    href = self.baseurl + href
+	for tag_a in sp.find_all('a'):
+	    href = tag_a.attrs.get('href')
+	    href = self.url_filter(href)
+	    if href:
 		self.hrefs.append(href)
     
     def __get_href(self):
