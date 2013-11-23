@@ -6,21 +6,24 @@ import urlparse
 import re
 
 from gevent.queue import Queue
+from gevent import monkey
+
+monkey.patch_all()
+
 
 class Spider:
-    def __init__(self, url='', depth=1):
+    def __init__(self, url='', depth=1, threads=4):
+	self.url = url
+	self.depth = depth
+	self.threads = threads
 	self.tasks = Queue()
-	self.tasks.put(Task(url, depth))
-	self.init_url = url or ''
-	self.depth = depth or ''
 	self.bucket = []
 	
     def run(self):
-	threds = [
-		gevent.spawn(self.work),
-		gevent.spawn(self.work),
-		gevent.spawn(self.work),
+	self.tasks.put(Task(self.url, self.depth))
+	threds = [ 
 		gevent.spawn(self.work)
+		for i in range(self.threads)
 		]
 	gevent.joinall(threds)
 
@@ -110,7 +113,7 @@ class Page:
 
 
 if __name__ == '__main__':
-    #url = 'http://www.python.org'
-    url = 'http://www.hao123.com'
-    spider = Spider(url=url, depth=3)
+    url = 'http://www.python.org'
+    #url = 'http://www.hao123.com'
+    spider = Spider(url=url, depth=10)
     spider.run()
