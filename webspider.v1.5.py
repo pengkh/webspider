@@ -35,9 +35,9 @@ class Spider:
 		continue
 	    self.bucket.append(task.url)
 	    task.run()
-	    subtasks = task.subtasks
-	    for t in subtasks:
+	    for t in task.subtasks:
 		self.tasks.put_nowait(t)
+
 
 class Task:
     def __init__(self, url, depth):
@@ -95,6 +95,7 @@ class Page:
 	self.content = req.content
 
     def url_filter(self, url):
+	# here could add more details about filter strategy
 	if not url:
 	    return None
 	u = urlparse.urlparse(url)
