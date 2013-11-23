@@ -13,6 +13,7 @@ class Spider:
 	self.tasks.put(Task(url, depth))
 	self.init_url = url or ''
 	self.depth = depth or ''
+	self.bucket = []
 	
     def run(self):
 	threds = [
@@ -26,6 +27,9 @@ class Spider:
     def work(self):
 	while not self.tasks.empty():
 	    task = self.tasks.get()
+	    if task.url in self.bucket:
+		continue
+	    self.bucket.append(task.url)
 	    task.run()
 	    subtasks = task.subtasks
 	    for t in subtasks:
@@ -51,6 +55,10 @@ class Task:
 	return self.subtasks
     subtasks = property(__get_subtasks)
 
+    def __get_url(self):
+	return self.url
+    url = property(__get_url)
+
 
 class Page:
     def __init__(self, url='', depth=''):
@@ -70,7 +78,7 @@ class Page:
 	    return None
     
     def do_request(self):
-	print 'do request to: %s' % self.url
+	print 'do request to: %s, depth: %s' % (self.url, self.depth)
 
 	if not self.url:
 	    return None
@@ -102,6 +110,7 @@ class Page:
 
 
 if __name__ == '__main__':
-    url = 'http://www.python.org'
-    spider = Spider(url=url, depth=1)
+    #url = 'http://www.python.org'
+    url = 'http://www.hao123.com'
+    spider = Spider(url=url, depth=3)
     spider.run()
