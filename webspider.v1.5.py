@@ -99,6 +99,7 @@ class Page:
 	    return None
 	sp = bs4.BeautifulSoup(self.content)
 	for a in sp.find_all('a'):
+	    # here need a filter
 	    href = a.attrs.get('href')
 	    if href and href[0] != '#':
 		# if not has protocol scheme or is a relative url
@@ -120,3 +121,7 @@ if __name__ == '__main__':
     #url = 'http://www.hao123.com'
     spider = Spider(url=url, depth=10)
     spider.run()
+
+
+# 1. maybe need to aoivd request to the download files link
+#  => so we need a fileter ?
