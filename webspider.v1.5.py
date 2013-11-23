@@ -10,7 +10,7 @@ from gevent.queue import Queue
 class Spider:
     def __init__(self, url='', depth=1):
 	self.tasks = Queue()
-	self.tasks.put(url)
+	self.tasks.put(Task(url, depth))
 	self.init_url = url or ''
 	self.depth = depth or ''
 	
